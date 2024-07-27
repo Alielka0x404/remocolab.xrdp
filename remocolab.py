@@ -86,22 +86,6 @@ def _download(url, path):
     print("Failed to download ", url)
     raise
 
-def _get_gpu_name():
-  r = subprocess.run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"], stdout = subprocess.PIPE, universal_newlines = True)
-  if r.returncode != 0:
-    return None
-  return r.stdout.strip()
-
-def _check_gpu_available():
-  gpu_name = _get_gpu_name()
-  if gpu_name == None:
-    print("This is not a runtime with GPU")
-  elif gpu_name == "Tesla K80":
-    print("Warning! GPU of your assigned virtual machine is Tesla K80.")
-    print("You might get better GPU by reseting the runtime.")
-  else:
-    return True
-
   return IPython.utils.io.ask_yes_no("Do you want to continue? [y/n]")
 
 def _set_public_key(user, public_key):
@@ -122,10 +106,6 @@ def _setupSSHDImpl(public_key, tunnel, ngrok_token, ngrok_region, mount_gdrive_t
   my_apt = _MyApt()
   #Following packages are useless because nvidia kernel modules are already loaded and I cannot remove or update it.
   #Uninstall them because upgrading them take long time.
-  my_apt.deleteInstalledPkg("nvidia-dkms", "nvidia-kernel-common", "nvidia-kernel-source")
-  my_apt.commit()
-  my_apt.update_upgrade()
-  my_apt.commit()
 
   subprocess.run(["unminimize"], input = "y\n", check = True, universal_newlines = True)
 
