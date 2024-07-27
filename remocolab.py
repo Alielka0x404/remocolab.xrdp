@@ -86,20 +86,7 @@ def _download(url, path):
     print("Failed to download ", url)
     raise
 
-def _get_gpu_name():
-  r = subprocess.run(["nvidia-smi", "--query-gpu=name", "--format=csv,noheader"], stdout = subprocess.PIPE, universal_newlines = True)
-  if r.returncode != 0:
-    return None
-  return r.stdout.strip()
 
-def _check_gpu_available():
-  gpu_name = _get_gpu_name()
-  if gpu_name == None:
-    print("This is not a runtime with GPU")
-  elif gpu_name == "Tesla K80":
-    print("Warning! GPU of your assigned virtual machine is Tesla K80.")
-    print("You might get better GPU by reseting the runtime.")
-  else:
     return True
 
   return IPython.utils.io.ask_yes_no("Do you want to continue? [y/n]")
